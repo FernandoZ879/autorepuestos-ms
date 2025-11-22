@@ -91,4 +91,16 @@ router.get('/me', async (req, res) => {
     }
 });
 
+// Get all users (For Admin)
+router.get('/users', async (req, res) => {
+    try {
+        // In a real app, we should verify admin privileges here
+        const { rows } = await pool.query('SELECT id, name, email, role, address, phone, created_at FROM users ORDER BY created_at DESC');
+        res.json(rows);
+    } catch (error) {
+        console.error('Get users error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;

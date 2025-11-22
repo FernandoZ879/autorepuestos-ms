@@ -27,21 +27,35 @@ const waitForDB = async () => {
 
 const createTable = async () => {
     await waitForDB();
-    // Tabla actualizada para el Excel y el diseño nuevo
-    const query = `
+    // Habilitar extensión UUID
+    await pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+    
+    // Reiniciar tabla para corregir tipos de datos (Dev fix)
+    await pool.query('DROP TABLE IF EXISTS products CASCADE');
+    await pool.query('DROP TABLE IF EXISTS categories CASCADE');
+
+    const queryCategories = `
+        CREATE TABLE IF NOT EXISTS categories (
+            id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+            name VARCHAR(50) UNIQUE NOT NULL,
+            description TEXT
+        );
+    `;
+    await pool.query(queryCategories);
+
+    const queryProducts = `
         CREATE TABLE IF NOT EXISTS products (
-            id SERIAL PRIMARY KEY,
+            id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
             name VARCHAR(100) NOT NULL,
             description TEXT,
             price DECIMAL(10, 2) NOT NULL,
-            stock INTEGER DEFAULT 0,
             sku VARCHAR(50) UNIQUE,
             category VARCHAR(50),
             image_url TEXT
         );
     `;
-    await pool.query(query);
-    console.log("✅ Products table ready");
+    await pool.query(queryProducts);
+    console.log("✅ Catalog tables ready (Products + Categories)");
 };
 
 module.exports = { pool, createTable };

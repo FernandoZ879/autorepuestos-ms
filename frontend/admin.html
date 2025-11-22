@@ -11,30 +11,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .modal-content {
-            animation: slideIn 0.2s ease-out;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .modal-overlay { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); }
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-content { animation: slideIn 0.2s ease-out; }
     </style>
 </head>
 
@@ -49,12 +29,9 @@
             <h1 class="text-2xl font-black text-slate-900 mb-2">Acceso Administrativo</h1>
             <p class="text-slate-500 mb-6 text-sm">Sistema restringido a personal autorizado.</p>
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
-                <input type="email" id="admin-email" placeholder="admin@autoparts.com"
-                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-                <input type="password" id="admin-password" placeholder="••••••••"
-                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-                <button type="submit"
-                    class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors shadow-lg">Ingresar</button>
+                <input type="email" id="admin-email" placeholder="admin@autoparts.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <input type="password" id="admin-password" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <button type="submit" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors shadow-lg">Ingresar</button>
             </form>
         </div>
     </div>
@@ -65,45 +42,31 @@
             <i data-lucide="settings-2" class="w-6 h-6 text-blue-500 mr-3"></i>
             <span class="font-bold text-lg tracking-wide">AutoParts<span class="text-blue-500">Admin</span></span>
         </div>
-
         <nav class="flex-1 py-6 space-y-1 px-3">
-            <a href="#" onclick="nav('dashboard')" id="nav-dashboard"
-                class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group active-nav bg-slate-800 text-white">
+            <a href="#" onclick="nav('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group active-nav bg-slate-800 text-white">
                 <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 group-hover:text-blue-400"></i> Dashboard
             </a>
-            <a href="#" onclick="nav('inventory')" id="nav-inventory"
-                class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
+            <a href="#" onclick="nav('inventory')" id="nav-inventory" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
                 <i data-lucide="box" class="w-5 h-5 mr-3 group-hover:text-blue-400"></i> Inventario
             </a>
-            <a href="#" onclick="nav('products')" id="nav-products"
-                class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
+            <a href="#" onclick="nav('products')" id="nav-products" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
                 <i data-lucide="package" class="w-5 h-5 mr-3 group-hover:text-blue-400"></i> Productos
             </a>
-            <a href="#" onclick="nav('categories')" id="nav-categories"
-                class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
+            <a href="#" onclick="nav('categories')" id="nav-categories" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
                 <i data-lucide="tag" class="w-5 h-5 mr-3 group-hover:text-blue-400"></i> Categorías
             </a>
-            <a href="#" onclick="nav('stores')" id="nav-stores"
-                class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
+            <a href="#" onclick="nav('stores')" id="nav-stores" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
                 <i data-lucide="store" class="w-5 h-5 mr-3 group-hover:text-blue-400"></i> Tiendas
             </a>
-            <a href="#" onclick="nav('orders')" id="nav-orders"
-                class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
+            <a href="#" onclick="nav('orders')" id="nav-orders" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
                 <i data-lucide="shopping-cart" class="w-5 h-5 mr-3 group-hover:text-blue-400"></i> Pedidos
             </a>
-            <a href="#" onclick="nav('customers')" id="nav-customers"
-                class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
+             <a href="#" onclick="nav('customers')" id="nav-customers" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
                 <i data-lucide="users" class="w-5 h-5 mr-3 group-hover:text-blue-400"></i> Clientes
             </a>
-            <a href="#" onclick="nav('reports')" id="nav-reports"
-                class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
-                <i data-lucide="bar-chart-3" class="w-5 h-5 mr-3 group-hover:text-blue-400"></i> Reportes
-            </a>
         </nav>
-
         <div class="p-4 border-t border-slate-800">
-            <button onclick="adminLogout()"
-                class="flex items-center justify-center w-full px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-red-900/30 rounded-lg transition-colors">
+            <button onclick="adminLogout()" class="flex items-center justify-center w-full px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-red-900/30 rounded-lg transition-colors">
                 <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Cerrar Sesión
             </button>
         </div>
@@ -111,7 +74,6 @@
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 flex flex-col overflow-hidden relative">
-        <!-- Header -->
         <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8">
             <h2 id="page-title" class="text-2xl font-bold text-slate-800">Dashboard General</h2>
             <div class="flex items-center gap-4">
@@ -119,183 +81,93 @@
                     <p class="text-sm font-bold text-slate-900">Administrador</p>
                     <p class="text-xs text-slate-500">Acceso Total</p>
                 </div>
-                <div
-                    class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
-                    AD</div>
+                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">AD</div>
             </div>
         </header>
 
-        <!-- Scrollable Content -->
         <div class="flex-1 overflow-y-auto p-8">
-
-            <!-- VIEW: DASHBOARD -->
+            <!-- DASHBOARD -->
             <div id="view-dashboard" class="view-section space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-xs font-bold text-slate-500 uppercase">Productos</p>
-                                <h3 id="stat-products" class="text-3xl font-black text-slate-900 mt-2">0</h3>
-                            </div>
-                            <div class="p-3 bg-blue-100 text-blue-600 rounded-lg"><i data-lucide="package"></i></div>
-                        </div>
+                        <p class="text-xs font-bold text-slate-500 uppercase">Productos</p>
+                        <h3 id="stat-products" class="text-3xl font-black text-slate-900 mt-2">0</h3>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-xs font-bold text-slate-500 uppercase">Ventas Totales</p>
-                                <h3 class="text-3xl font-black text-slate-900 mt-2">$12,450</h3>
-                            </div>
-                            <div class="p-3 bg-green-100 text-green-600 rounded-lg"><i data-lucide="trending-up"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-xs font-bold text-slate-500 uppercase">Pedidos Pendientes</p>
-                                <h3 class="text-3xl font-black text-slate-900 mt-2">15</h3>
-                            </div>
-                            <div class="p-3 bg-orange-100 text-orange-600 rounded-lg"><i data-lucide="package"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-xs font-bold text-slate-500 uppercase">Clientes Activos</p>
-                                <h3 class="text-3xl font-black text-slate-900 mt-2">128</h3>
-                            </div>
-                            <div class="p-3 bg-purple-100 text-purple-600 rounded-lg"><i data-lucide="users"></i></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                        <h4 class="font-bold text-slate-800 mb-4">Resumen de Ventas</h4>
-                        <canvas id="salesChart" height="200"></canvas>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                        <h4 class="font-bold text-slate-800 mb-4">Alertas de Stock Bajo</h4>
-                        <div id="low-stock-alerts" class="space-y-2"></div>
+                        <p class="text-xs font-bold text-slate-500 uppercase">Ventas Totales</p>
+                        <h3 class="text-3xl font-black text-slate-900 mt-2">$0.00</h3>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW: PRODUCTS -->
+            <!-- PRODUCTS -->
             <div id="view-products" class="view-section hidden space-y-6">
-                <!-- Toolbar -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="flex flex-wrap gap-4 justify-between items-center">
-                        <div class="flex gap-4 flex-1">
-                            <input type="text" id="search-products" placeholder="Buscar productos..."
-                                class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                            <select id="filter-category"
-                                class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                                <option value="">Todas las categorías</option>
-                            </select>
+                    <div class="flex justify-between items-center">
+                        <div class="flex gap-4">
+                            <input type="text" id="search-products" placeholder="Buscar..." class="px-4 py-2 border rounded-lg">
+                            <button onclick="openExcelImport()" class="px-4 py-2 bg-green-600 text-white rounded-lg flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Importar</button>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="openExcelImport()"
-                                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">
-                                <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Importar Excel
-                            </button>
-                            <button onclick="openProductModal(null)"
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                                <i data-lucide="plus" class="w-4 h-4"></i> Nuevo Producto
-                            </button>
-                        </div>
+                        <button onclick="openProductModal(null)" class="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Nuevo Producto</button>
                     </div>
                 </div>
-
-                <!-- Products Table -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead
-                                class="bg-slate-50 text-slate-500 uppercase text-xs font-bold border-b border-slate-200">
-                                <tr>
-                                    <th class="px-6 py-4">Imagen</th>
-                                    <th class="px-6 py-4">Producto</th>
-                                    <th class="px-6 py-4">SKU</th>
-                                    <th class="px-6 py-4">Categoría</th>
-                                    <th class="px-6 py-4">Precio</th>
-                                    <th class="px-6 py-4">Stock Total</th>
-                                    <th class="px-6 py-4 text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="products-table-body" class="divide-y divide-slate-100">
-                                <!-- JS Injection -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 border-b">
+                            <tr>
+                                <th class="px-6 py-4">Imagen</th>
+                                <th class="px-6 py-4">Nombre</th>
+                                <th class="px-6 py-4">SKU</th>
+                                <th class="px-6 py-4">Categoría</th>
+                                <th class="px-6 py-4">Precio</th>
+                                <th class="px-6 py-4">Stock</th>
+                                <th class="px-6 py-4 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body" class="divide-y divide-slate-100"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- VIEW: CATEGORIES -->
+            <!-- CATEGORIES -->
             <div id="view-categories" class="view-section hidden space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold">Gestión de Categorías</h3>
-                        <button onclick="openCategoryModal(null)"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Nueva Categoría
-                        </button>
-                    </div>
-                    <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between">
+                    <h3 class="text-xl font-bold">Categorías</h3>
+                    <button onclick="openCategoryModal(null)" class="px-4 py-2 bg-blue-600 text-white rounded-lg flex gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Nueva</button>
                 </div>
+                <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
             </div>
 
-            <!-- VIEW: STORES -->
+            <!-- STORES -->
             <div id="view-stores" class="view-section hidden space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold">Gestión de Tiendas</h3>
-                        <button onclick="openStoreModal(null)"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Nueva Tienda
-                        </button>
-                    </div>
-                    <div id="stores-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between">
+                    <h3 class="text-xl font-bold">Tiendas</h3>
+                    <button onclick="openStoreModal(null)" class="px-4 py-2 bg-blue-600 text-white rounded-lg flex gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Nueva</button>
                 </div>
+                <div id="stores-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
 
-            <!-- VIEW: INVENTORY -->
+            <!-- INVENTORY -->
             <div id="view-inventory" class="view-section hidden space-y-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <h3 class="text-lg font-bold mb-4">Stock por Producto y Tienda</h3>
-                    <div id="inventory-matrix" class="overflow-x-auto"></div>
+                    <h3 class="text-lg font-bold mb-4">Stock por Tienda</h3>
+                    <div id="inventory-matrix"></div>
+                </div>
+            </div>
+            
+             <!-- ORDERS -->
+            <div id="view-orders" class="view-section hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold mb-4">Pedidos Recientes</h3>
+                    <div id="orders-list"></div>
                 </div>
             </div>
 
-            <!-- VIEW: ORDERS -->
-            <div id="view-orders" class="view-section hidden">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-10 text-center">
-                    <div class="inline-block p-4 bg-slate-100 rounded-full mb-4"><i data-lucide="shopping-cart"
-                            class="w-8 h-8 text-slate-400"></i></div>
-                    <h3 class="text-xl font-bold text-slate-800">Gestión de Pedidos</h3>
-                    <p class="text-slate-500 mt-2 mb-6">Módulo de pedidos conectado al microservicio Orders.</p>
-                </div>
-            </div>
-
-            <!-- VIEW: CUSTOMERS -->
-            <div id="view-customers" class="view-section hidden">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-10 text-center">
-                    <div class="inline-block p-4 bg-slate-100 rounded-full mb-4"><i data-lucide="users"
-                            class="w-8 h-8 text-slate-400"></i></div>
-                    <h3 class="text-xl font-bold text-slate-800">Base de Datos de Clientes</h3>
-                    <p class="text-slate-500 mt-2">Listado de usuarios registrados desde el Auth Service.</p>
-                </div>
-            </div>
-
-            <!-- VIEW: REPORTS -->
-            <div id="view-reports" class="view-section hidden">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-10 text-center">
-                    <div class="inline-block p-4 bg-slate-100 rounded-full mb-4"><i data-lucide="bar-chart-3"
-                            class="w-8 h-8 text-slate-400"></i></div>
-                    <h3 class="text-xl font-bold text-slate-800">Reportes Avanzados</h3>
-                    <p class="text-slate-500 mt-2">Conectado al microservicio de Reports.</p>
+            <!-- CUSTOMERS -->
+            <div id="view-customers" class="view-section hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold mb-4">Base de Datos de Clientes</h3>
+                    <div id="customers-list"></div>
                 </div>
             </div>
 
@@ -305,64 +177,24 @@
     <!-- PRODUCT MODAL -->
     <div id="product-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 modal-overlay">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto modal-content">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h3 id="product-modal-title" class="text-xl font-bold">Nuevo Producto</h3>
-                <button onclick="closeProductModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"
-                        class="w-6 h-6"></i></button>
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 id="product-modal-title" class="text-xl font-bold">Producto</h3>
+                <button onclick="closeProductModal()"><i data-lucide="x"></i></button>
             </div>
             <form id="product-form" class="p-6 space-y-4">
                 <input type="hidden" id="product-id">
-
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Nombre del Producto *</label>
-                        <input type="text" id="product-name" required
-                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">SKU *</label>
-                        <input type="text" id="product-sku" required
-                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
+                    <input type="text" id="product-name" placeholder="Nombre" required class="border p-2 rounded w-full">
+                    <input type="text" id="product-sku" placeholder="SKU" required class="border p-2 rounded w-full">
                 </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Descripción</label>
-                    <textarea id="product-description" rows="3"
-                        class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                <textarea id="product-description" placeholder="Descripción" class="border p-2 rounded w-full"></textarea>
+                <div class="grid grid-cols-3 gap-4">
+                    <input type="number" id="product-price" step="0.01" placeholder="Precio" required class="border p-2 rounded w-full">
+                    <input type="number" id="product-stock" placeholder="Stock Inicial" class="border p-2 rounded w-full">
+                    <select id="product-category" required class="border p-2 rounded w-full"></select>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Precio ($) *</label>
-                        <input type="number" id="product-price" step="0.01" required
-                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Categoría *</label>
-                        <select id="product-category" required
-                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="">Seleccionar...</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">URL de Imagen</label>
-                    <input type="url" id="product-image"
-                        class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-
-                <div class="flex gap-4 pt-4 border-t">
-                    <button type="submit"
-                        class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-bold">
-                        Guardar Producto
-                    </button>
-                    <button type="button" onclick="closeProductModal()"
-                        class="px-6 py-3 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-bold">
-                        Cancelar
-                    </button>
-                </div>
+                <input type="url" id="product-image" placeholder="URL Imagen (Opcional)" class="border p-2 rounded w-full">
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded font-bold">Guardar</button>
             </form>
         </div>
     </div>
@@ -370,660 +202,454 @@
     <!-- CATEGORY MODAL -->
     <div id="category-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 modal-overlay">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md modal-content">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h3 id="category-modal-title" class="text-xl font-bold">Nueva Categoría</h3>
-                <button onclick="closeCategoryModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"
-                        class="w-6 h-6"></i></button>
-            </div>
             <form id="category-form" class="p-6 space-y-4">
-                <input type="hidden" id="category-id">
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Nombre de Categoría *</label>
-                    <input type="text" id="category-name" required
-                        class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Descripción</label>
-                    <textarea id="category-description" rows="3"
-                        class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
-                </div>
-
-                <div class="flex gap-4 pt-4 border-t">
-                    <button type="submit"
-                        class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-bold">
-                        Guardar
-                    </button>
-                    <button type="button" onclick="closeCategoryModal()"
-                        class="px-6 py-3 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-bold">
-                        Cancelar
-                    </button>
-                </div>
+                <h3 class="text-xl font-bold">Nueva Categoría</h3>
+                <input type="text" id="category-name" placeholder="Nombre" required class="border p-2 rounded w-full">
+                <textarea id="category-description" placeholder="Descripción" class="border p-2 rounded w-full"></textarea>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Guardar</button>
+                <button type="button" onclick="closeCategoryModal()" class="w-full bg-slate-200 py-2 rounded">Cancelar</button>
             </form>
         </div>
     </div>
 
     <!-- STORE MODAL -->
     <div id="store-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 modal-overlay">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl modal-content">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h3 id="store-modal-title" class="text-xl font-bold">Nueva Tienda</h3>
-                <button onclick="closeStoreModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"
-                        class="w-6 h-6"></i></button>
-            </div>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md modal-content">
             <form id="store-form" class="p-6 space-y-4">
-                <input type="hidden" id="store-id">
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Nombre de Tienda *</label>
-                        <input type="text" id="store-name" required
-                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">NIT *</label>
-                        <input type="text" id="store-nit" required
-                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Dirección *</label>
-                    <input type="text" id="store-address" required
-                        class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Teléfono *</label>
-                        <input type="tel" id="store-phone" required
-                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Email</label>
-                        <input type="email" id="store-email"
-                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                </div>
-
-                <div class="flex gap-4 pt-4 border-t">
-                    <button type="submit"
-                        class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-bold">
-                        Guardar Tienda
-                    </button>
-                    <button type="button" onclick="closeStoreModal()"
-                        class="px-6 py-3 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-bold">
-                        Cancelar
-                    </button>
-                </div>
+                <h3 class="text-xl font-bold">Nueva Tienda</h3>
+                <input type="text" id="store-name" placeholder="Nombre" required class="border p-2 rounded w-full">
+                <input type="text" id="store-nit" placeholder="NIT" required class="border p-2 rounded w-full">
+                <input type="text" id="store-address" placeholder="Dirección" required class="border p-2 rounded w-full">
+                <input type="tel" id="store-phone" placeholder="Teléfono" required class="border p-2 rounded w-full">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Guardar</button>
+                <button type="button" onclick="closeStoreModal()" class="w-full bg-slate-200 py-2 rounded">Cancelar</button>
             </form>
         </div>
     </div>
 
     <!-- EXCEL IMPORT MODAL -->
     <div id="excel-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 modal-overlay">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl modal-content">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="text-xl font-bold">Importar Productos desde Excel</h3>
-                <button onclick="closeExcelModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"
-                        class="w-6 h-6"></i></button>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl modal-content p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Importar Excel</h3>
+                <button onclick="downloadTemplate()" class="text-blue-600 text-sm underline hover:text-blue-800">Descargar Plantilla</button>
             </div>
-            <div class="p-6">
-                <div
-                    class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center cursor-pointer hover:bg-slate-50 transition-colors relative group">
-                    <input type="file" id="excel-file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        onchange="handleExcelUpload(event)" accept=".xlsx,.xls">
-                    <div class="flex flex-col items-center justify-center pointer-events-none">
-                        <div class="bg-blue-50 p-4 rounded-full mb-3 group-hover:bg-blue-100 transition-colors">
-                            <i data-lucide="upload-cloud" class="w-8 h-8 text-blue-600"></i>
-                        </div>
-                        <p class="font-medium text-slate-700">Arrastra tu archivo Excel o haz clic aquí</p>
-                        <p class="text-xs text-slate-400 mt-1">Formato: name, description, price, sku, category,
-                            image_url</p>
-                    </div>
-                </div>
-
-                <div id="import-preview" class="mt-6 hidden bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="font-bold text-slate-700">Vista Previa (<span id="preview-count">0</span> productos)
-                        </h4>
-                        <button onclick="cancelImport()" class="text-xs text-red-500 hover:underline">Cancelar</button>
-                    </div>
-                    <div class="bg-white p-3 rounded border border-slate-200 h-32 overflow-y-auto text-xs font-mono mb-4"
-                        id="json-preview-content"></div>
-                    <button onclick="processImport()"
-                        class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
-                        <i data-lucide="save"></i> Confirmar y Guardar en Base de Datos
-                    </button>
-                </div>
+            <input type="file" id="excel-file" onchange="handleExcelUpload(event)" accept=".xlsx,.xls" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+            <div id="import-preview" class="mt-4 hidden">
+                <div id="json-preview-content" class="bg-slate-50 p-4 h-40 overflow-auto text-xs font-mono border rounded mb-4"></div>
+                <button onclick="processImport()" class="w-full bg-green-600 text-white py-3 rounded font-bold">Confirmar Importación</button>
             </div>
+             <button onclick="closeExcelModal()" class="mt-2 text-red-500 text-sm">Cerrar</button>
         </div>
     </div>
 
     <script>
-        // --- CONFIG ---
         const API_URL = 'http://localhost:3010';
         let importedData = [];
-        let editingProductId = null;
 
-        // --- INIT ---
         window.onload = () => {
             lucide.createIcons();
-            checkAuth();
-        };
-
-        // --- AUTH ---
-        function checkAuth() {
-            const token = localStorage.getItem('admin_token');
-            const overlay = document.getElementById('login-screen');
-
-            if (token) {
-                overlay.classList.add('hidden');
+            if(localStorage.getItem('admin_token')) {
+                document.getElementById('login-screen').classList.add('hidden');
                 initDashboard();
-                loadProducts();
-            } else {
-                overlay.classList.remove('hidden');
             }
-        }
+        };
 
         function handleAdminLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('admin-email').value;
-            const pass = document.getElementById('admin-password').value;
-
-            if (email === 'admin@autoparts.com' && pass === 'admin123') {
-                localStorage.setItem('admin_token', 'secure_token_123');
-                checkAuth();
-            } else {
-                alert('Credenciales Incorrectas. Intenta: admin@autoparts.com / admin123');
+            if(document.getElementById('admin-email').value === 'admin@autoparts.com') {
+                localStorage.setItem('admin_token', '123');
+                location.reload();
             }
         }
+        function adminLogout() { localStorage.removeItem('admin_token'); location.reload(); }
 
-        function adminLogout() {
-            localStorage.removeItem('admin_token');
-            location.reload();
-        }
-
-        // --- NAVIGATION ---
-        function nav(viewName) {
+        function nav(view) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('nav a').forEach(el => {
-                el.classList.remove('bg-slate-800', 'text-white');
-                el.classList.add('text-slate-300');
-            });
-
-            document.getElementById(`view-${viewName}`).classList.remove('hidden');
-            const activeLink = document.getElementById(`nav-${viewName}`);
-            activeLink.classList.add('bg-slate-800', 'text-white');
-            activeLink.classList.remove('text-slate-300');
-
-            const titles = {
-                dashboard: 'Dashboard General',
-                inventory: 'Control de Inventario',
-                products: 'Gestión de Productos',
-                categories: 'Categorías',
-                stores: 'Tiendas',
-                orders: 'Pedidos',
-                customers: 'Clientes',
-                reports: 'Reportes'
-            };
-            document.getElementById('page-title').textContent = titles[viewName];
-
-            // Load data for specific views
-            if (viewName === 'products') loadProducts();
-            if (viewName === 'categories') loadCategories();
-            if (viewName === 'stores') loadStores();
-            if (viewName === 'inventory') loadInventoryMatrix();
+            document.getElementById(`view-${view}`).classList.remove('hidden');
+            if(view === 'products') loadProducts();
+            if(view === 'categories') loadCategories();
+            if(view === 'stores') loadStores();
+            if(view === 'inventory') loadInventoryMatrix();
+            if(view === 'orders') loadOrders();
+            if(view === 'customers') loadCustomers();
         }
 
-        // --- DASHBOARD ---
-        function initDashboard() {
-            const ctx = document.getElementById('salesChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
-                    datasets: [{
-                        label: 'Ventas ($)',
-                        data: [1200, 1900, 3000, 500, 2000, 3000, 4500],
-                        backgroundColor: '#2563eb',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-
-            updateStats();
+        // --- HELPERS ---
+        async function getStores() {
+            const res = await fetch(`${API_URL}/inventory/stores`);
+            return await res.json();
         }
-
-        async function updateStats() {
-            try {
-                const res = await fetch(`${API_URL}/catalog/products`);
-                const products = await res.json();
-                document.getElementById('stat-products').textContent = products.length;
-
-                // Low stock alerts
-                const lowStockEl = document.getElementById('low-stock-alerts');
-                const lowStock = products.filter(p => (p.stock || 0) < 5).slice(0, 5);
-
-                if (lowStock.length === 0) {
-                    lowStockEl.innerHTML = '<p class="text-slate-400 text-sm">Sin alertas de stock bajo</p>';
-                } else {
-                    lowStockEl.innerHTML = lowStock.map(p => `
-                        <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                            <div>
-                                <p class="font-medium text-sm text-slate-900">${p.name}</p>
-                                <p class="text-xs text-slate-500">SKU: ${p.sku || 'N/A'}</p>
-                            </div>
-                            <span class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">Stock: ${p.stock || 0}</span>
-                        </div>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Error loading stats:', error);
+        
+        async function getOrCreateDefaultStore() {
+            let stores = await getStores();
+            if (stores.length === 0) {
+                const res = await fetch(`${API_URL}/inventory/stores`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({name: 'Almacén Principal', nit: '1000', address: 'Central', phone: '000'})
+                });
+                const newStore = await res.json();
+                return newStore.id;
             }
+            return stores[0].id;
+        }
+        
+        function downloadTemplate() {
+            const data = [
+                { Nombre: 'Ejemplo Batería', Descripcion: 'Batería 12V', Precio: 150, SKU: 'BAT-001', Categoria: 'Electrico', Imagen: '', Stock: 10 },
+                { Nombre: 'Ejemplo Freno', Descripcion: 'Pastillas de freno', Precio: 50, SKU: 'BRK-002', Categoria: 'Frenos', Imagen: '', Stock: 20 }
+            ];
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Template");
+            XLSX.writeFile(wb, "template_productos.xlsx");
         }
 
-        // --- PRODUCTS MANAGEMENT ---
+        // --- PRODUCTS ---
         async function loadProducts() {
             const tbody = document.getElementById('products-table-body');
-            const categorySelect = document.getElementById('product-category');
-            const filterCategory = document.getElementById('filter-category');
+            tbody.innerHTML = '<tr><td colspan="7">Cargando...</td></tr>';
+            
+            const [products, stocks] = await Promise.all([
+                fetch(`${API_URL}/catalog/products`).then(r => r.json()),
+                fetch(`${API_URL}/inventory/stock`).then(r => r.json())
+            ]);
+            
+            await loadCategoriesDropdown();
 
-            tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-slate-400">Cargando datos...</td></tr>';
-
-            try {
-                const res = await fetch(`${API_URL}/catalog/products`);
-                const products = await res.json();
-
-                // Load categories for dropdowns
-                await loadCategoriesDropdown();
-
-                tbody.innerHTML = '';
-                if (products.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-slate-400">No hay productos. ¡Crea uno nuevo!</td></tr>';
-                    return;
-                }
-
-                products.forEach(p => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-slate-50 transition-colors';
-                    tr.innerHTML = `
-                        <td class="px-6 py-4">
-                            <div class="w-12 h-12 bg-slate-200 rounded overflow-hidden">
-                                <img src="${p.image_url || 'https://via.placeholder.com/100'}" class="w-full h-full object-cover">
-                            </div>
+            tbody.innerHTML = products.map(p => {
+                const productStock = stocks
+                    .filter(s => s.product_id === p.id)
+                    .reduce((sum, s) => sum + s.quantity, 0);
+                
+                // Placeholder logic
+                const img = (p.image_url && p.image_url !== 'placeholder.png') ? p.image_url : 'placeholder.png';
+                
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4"><img src="${img}" class="w-12 h-12 object-cover rounded bg-slate-200" onerror="this.src='placeholder.png'"></td>
+                        <td class="p-4 font-medium">${p.name}</td>
+                        <td class="p-4 text-slate-500 text-xs font-mono">${p.sku || '-'}</td>
+                        <td class="p-4"><span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">${p.category || 'N/A'}</span></td>
+                        <td class="p-4 font-bold">$${parseFloat(p.price).toFixed(2)}</td>
+                        <td class="p-4"><span class="font-bold ${productStock < 5 ? 'text-red-600' : 'text-green-600'}">${productStock}</span></td>
+                        <td class="p-4 text-right">
+                            <button onclick="deleteProduct('${p.id}')" class="text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </td>
-                        <td class="px-6 py-4">
-                            <p class="font-medium text-slate-900">${p.name}</p>
-                            <p class="text-xs text-slate-500">${(p.description || '').substring(0, 50)}...</p>
-                        </td>
-                        <td class="px-6 py-4 font-mono text-xs text-slate-500">${p.sku || 'N/A'}</td>
-                        <td class="px-6 py-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">${p.category || 'General'}</span></td>
-                        <td class="px-6 py-4 font-bold text-slate-700">$${parseFloat(p.price).toFixed(2)}</td>
-                        <td class="px-6 py-4">
-                            <span class="px-3 py-1 ${(p.stock || 0) < 5 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} rounded-full text-xs font-bold">
-                                ${p.stock || 0}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-right space-x-2">
-                            <button onclick="openProductModal(${p.id})" class="text-blue-600 hover:text-blue-800 font-medium text-sm">
-                                <i data-lucide="edit" class="w-4 h-4 inline"></i> Editar
-                            </button>
-                            <button onclick="deleteProduct(${p.id})" class="text-red-600 hover:text-red-800 font-medium text-sm">
-                                <i data-lucide="trash-2" class="w-4 h-4 inline"></i> Eliminar
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-                lucide.createIcons();
-            } catch (error) {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-red-500">Error de conexión con API</td></tr>';
-            }
+                    </tr>
+                `;
+            }).join('');
+            lucide.createIcons();
+            document.getElementById('stat-products').textContent = products.length;
         }
 
         async function loadCategoriesDropdown() {
-            const categories = await getCategories();
-            const selects = [document.getElementById('product-category'), document.getElementById('filter-category')];
-
-            selects.forEach(select => {
-                if (!select) return;
-                const currentValue = select.value;
-                select.innerHTML = '<option value="">Seleccionar...</option>';
-                categories.forEach(cat => {
-                    select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
-                });
-                select.value = currentValue;
-            });
+            try {
+                const res = await fetch(`${API_URL}/catalog/categories`);
+                const categories = await res.json();
+                const select = document.getElementById('product-category');
+                select.innerHTML = '<option value="">Seleccionar Categoría</option>' + 
+                    categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            } catch (e) { console.error("Error loading categories", e); }
         }
 
-        async function openProductModal(productId) {
-            editingProductId = productId;
-            const modal = document.getElementById('product-modal');
-            const title = document.getElementById('product-modal-title');
-            const form = document.getElementById('product-form');
-
-            form.reset();
-            document.getElementById('product-id').value = productId || '';
-
-            if (productId) {
-                title.textContent = 'Editar Producto';
-                try {
-                    const res = await fetch(`${API_URL}/catalog/products`);
-                    const products = await res.json();
-                    const product = products.find(p => p.id === productId);
-
-                    if (product) {
-                        document.getElementById('product-name').value = product.name || '';
-                        document.getElementById('product-sku').value = product.sku || '';
-                        document.getElementById('product-description').value = product.description || '';
-                        document.getElementById('product-price').value = product.price || '';
-                        document.getElementById('product-category').value = product.category || '';
-                        document.getElementById('product-image').value = product.image_url || '';
-                    }
-                } catch (error) {
-                    console.error('Error loading product:', error);
-                }
-            } else {
-                title.textContent = 'Nuevo Producto';
-            }
-
-            await loadCategoriesDropdown();
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            lucide.createIcons();
-        }
-
-        function closeProductModal() {
-            document.getElementById('product-modal').classList.add('hidden');
-            document.getElementById('product-modal').classList.remove('flex');
-            editingProductId = null;
-        }
-
+        // --- SAVE PRODUCT (CHAINED) ---
         document.getElementById('product-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const imgInput = document.getElementById('product-image').value;
+            const image_url = imgInput.trim() === '' ? 'placeholder.png' : imgInput;
 
-            const productData = {
+            const data = {
                 name: document.getElementById('product-name').value,
                 sku: document.getElementById('product-sku').value,
                 description: document.getElementById('product-description').value,
                 price: parseFloat(document.getElementById('product-price').value),
                 category: document.getElementById('product-category').value,
-                image_url: document.getElementById('product-image').value || 'https://via.placeholder.com/400',
-                stock: 0
+                image_url: image_url
             };
+            const initialStock = parseInt(document.getElementById('product-stock').value) || 0;
 
             try {
-                const method = editingProductId ? 'PUT' : 'POST';
-                const url = editingProductId
-                    ? `${API_URL}/catalog/products/${editingProductId}`
-                    : `${API_URL}/catalog/products`;
-
-                const res = await fetch(url, {
-                    method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(productData)
+                const res = await fetch(`${API_URL}/catalog/products`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
                 });
+                
+                if (!res.ok) throw new Error('Error al crear producto');
+                const product = await res.json();
 
-                if (res.ok) {
-                    alert(`Producto ${editingProductId ? 'actualizado' : 'creado'} exitosamente`);
-                    closeProductModal();
-                    loadProducts();
-                    updateStats();
-                } else {
-                    alert('Error al guardar producto');
+                if (initialStock > 0) {
+                    const storeId = await getOrCreateDefaultStore();
+                    await fetch(`${API_URL}/inventory/stock`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ productId: product.id, storeId, quantity: initialStock })
+                    });
                 }
-            } catch (error) {
-                console.error('Error saving product:', error);
-                alert('Error de conexión');
+
+                alert('Producto guardado correctamente');
+                closeProductModal();
+                loadProducts();
+            } catch (err) {
+                alert(err.message);
             }
         });
 
-        async function deleteProduct(productId) {
-            if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+        // --- EXCEL IMPORT (CHAINED) ---
+        async function processImport() {
+            if (importedData.length === 0) return;
+            let count = 0;
+            const storeId = await getOrCreateDefaultStore();
 
-            try {
-                const res = await fetch(`${API_URL}/catalog/products/${productId}`, {
-                    method: 'DELETE'
-                });
+            for (const item of importedData) {
+                try {
+                    let img = item.image_url || item.Imagen || '';
+                    if (!img || img.trim() === '') img = 'placeholder.png';
 
-                if (res.ok) {
-                    alert('Producto eliminado');
-                    loadProducts();
-                    updateStats();
-                } else {
-                    alert('Error al eliminar producto');
-                }
-            } catch (error) {
-                console.error('Error deleting product:', error);
-                alert('Error de conexión');
+                    const payload = {
+                        name: item.name || item.Nombre,
+                        description: item.description || item.Descripcion,
+                        price: item.price || item.Precio,
+                        sku: item.sku || item.SKU || `GEN-${Math.floor(Math.random()*100000)}`,
+                        category: item.category || item.Categoria || 'General',
+                        image_url: img
+                    };
+                    
+                    const res = await fetch(`${API_URL}/catalog/products`, {
+                        method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+                    });
+                    if(res.ok) {
+                        const prod = await res.json();
+                        const stock = item.stock || item.Stock || 0;
+                        if(stock > 0) {
+                            await fetch(`${API_URL}/inventory/stock`, {
+                                method: 'POST', headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({ productId: prod.id, storeId, quantity: stock })
+                            });
+                        }
+                        count++;
+                    }
+                } catch (e) { console.error(e); }
             }
+            alert(`Importados ${count} productos`);
+            closeExcelModal();
+            loadProducts();
         }
 
         // --- CATEGORIES ---
-        async function getCategories() {
-            // Mock categories - replace with API call when available
-            return [
-                { id: 1, name: 'Frenos', description: 'Sistemas de frenado' },
-                { id: 2, name: 'Motor', description: 'Componentes de motor' },
-                { id: 3, name: 'Eléctrico', description: 'Sistema eléctrico' },
-                { id: 4, name: 'Suspensión', description: 'Sistema de suspensión' },
-                { id: 5, name: 'Transmisión', description: 'Sistema de transmisión' }
-            ];
-        }
-
         async function loadCategories() {
-            const grid = document.getElementById('categories-grid');
-            const categories = await getCategories();
-
-            grid.innerHTML = categories.map(cat => `
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="p-3 bg-blue-100 rounded-lg">
-                            <i data-lucide="tag" class="w-6 h-6 text-blue-600"></i>
-                        </div>
-                        <button onclick="openCategoryModal(${cat.id})" class="text-slate-400 hover:text-blue-600">
-                            <i data-lucide="edit" class="w-4 h-4"></i>
-                        </button>
+            try {
+                const res = await fetch(`${API_URL}/catalog/categories`);
+                const cats = await res.json();
+                document.getElementById('categories-grid').innerHTML = cats.map(c => `
+                    <div class="bg-white p-4 rounded shadow border">
+                        <h4 class="font-bold">${c.name}</h4>
+                        <p class="text-sm text-slate-500">${c.description || ''}</p>
+                        <button onclick="deleteCategory('${c.id}')" class="text-red-500 text-xs mt-2">Eliminar</button>
                     </div>
-                    <h4 class="font-bold text-lg text-slate-900">${cat.name}</h4>
-                    <p class="text-slate-500 text-sm mt-1">${cat.description}</p>
-                </div>
-            `).join('');
-            lucide.createIcons();
+                `).join('');
+            } catch (e) {
+                document.getElementById('categories-grid').innerHTML = '<p>Error cargando categorías</p>';
+            }
         }
-
-        function openCategoryModal(categoryId) {
-            const modal = document.getElementById('category-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            lucide.createIcons();
-        }
-
-        function closeCategoryModal() {
-            document.getElementById('category-modal').classList.add('hidden');
-            document.getElementById('category-modal').classList.remove('flex');
+        
+        document.getElementById('category-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await fetch(`${API_URL}/catalog/categories`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: document.getElementById('category-name').value,
+                    description: document.getElementById('category-description').value
+                })
+            });
+            closeCategoryModal();
+            loadCategories();
+        });
+        
+        async function deleteCategory(id) {
+            if(confirm('Eliminar?')) {
+                await fetch(`${API_URL}/catalog/categories/${id}`, { method: 'DELETE' });
+                loadCategories();
+            }
         }
 
         // --- STORES ---
         async function loadStores() {
-            const grid = document.getElementById('stores-grid');
-            // Mock data - replace with API call
-            const stores = [
-                { id: 1, name: 'Tienda Central', address: 'Av. Principal 100', phone: '59171234567', email: 'central@autoparts.com' },
-                { id: 2, name: 'Tienda Norte', address: 'Calle Norte 50', phone: '59171234568', email: 'norte@autoparts.com' }
-            ];
-
-            grid.innerHTML = stores.map(store => `
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="p-3 bg-green-100 rounded-lg">
-                            <i data-lucide="store" class="w-6 h-6 text-green-600"></i>
-                        </div>
-                        <button onclick="openStoreModal(${store.id})" class="text-blue-600 hover:text-blue-800">
-                            <i data-lucide="edit" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                    <h4 class="font-bold text-lg text-slate-900 mb-2">${store.name}</h4>
-                    <div class="space-y-1 text-sm text-slate-600">
-                        <p><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i> ${store.address}</p>
-                        <p><i data-lucide="phone" class="w-3 h-3 inline mr-1"></i> ${store.phone}</p>
-                        <p><i data-lucide="mail" class="w-3 h-3 inline mr-1"></i> ${store.email}</p>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        function openStoreModal(storeId) {
-            const modal = document.getElementById('store-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            lucide.createIcons();
-        }
-
-        function closeStoreModal() {
-            document.getElementById('store-modal').classList.add('hidden');
-            document.getElementById('store-modal').classList.remove('flex');
-        }
-
-        // --- INVENTORY MATRIX ---
-        async function loadInventoryMatrix() {
-            const container = document.getElementById('inventory-matrix');
-            container.innerHTML = '<p class="text-center text-slate-400 py-8">Cargando matriz de inventario...</p>';
-
             try {
-                const res = await fetch(`${API_URL}/catalog/products`);
-                const products = await res.json();
+                const stores = await getStores();
+                document.getElementById('stores-grid').innerHTML = stores.map(s => `
+                    <div class="bg-white p-4 rounded shadow border">
+                        <h4 class="font-bold">${s.name}</h4>
+                        <p class="text-xs">NIT: ${s.nit}</p>
+                        <p class="text-xs">${s.address}</p>
+                    </div>
+                `).join('');
+            } catch(e) {
+                 document.getElementById('stores-grid').innerHTML = '<p>Error cargando tiendas</p>';
+            }
+        }
 
-                if (products.length === 0) {
-                    container.innerHTML = '<p class="text-center text-slate-400 py-8">No hay productos en el inventario</p>';
+        document.getElementById('store-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await fetch(`${API_URL}/inventory/stores`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: document.getElementById('store-name').value,
+                    nit: document.getElementById('store-nit').value,
+                    address: document.getElementById('store-address').value,
+                    phone: document.getElementById('store-phone').value
+                })
+            });
+            closeStoreModal();
+            loadStores();
+        });
+
+        // --- CUSTOMERS ---
+        async function loadCustomers() {
+            const container = document.getElementById('customers-list');
+            container.innerHTML = '<p>Cargando clientes...</p>';
+            try {
+                const res = await fetch(`${API_URL}/auth/users`);
+                const users = await res.json();
+                
+                if(users.length === 0) {
+                     container.innerHTML = '<p>No hay clientes registrados.</p>';
+                     return;
+                }
+
+                let html = `<table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 border-b"><tr>
+                        <th class="p-4">Nombre</th>
+                        <th class="p-4">Email</th>
+                        <th class="p-4">Rol</th>
+                        <th class="p-4">Teléfono</th>
+                        <th class="p-4">Registrado</th>
+                    </tr></thead><tbody>`;
+                
+                users.forEach(u => {
+                    html += `<tr class="border-b hover:bg-slate-50">
+                        <td class="p-4 font-bold">${u.name}</td>
+                        <td class="p-4">${u.email}</td>
+                        <td class="p-4"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">${u.role}</span></td>
+                        <td class="p-4">${u.phone || '-'}</td>
+                        <td class="p-4">${new Date(u.created_at).toLocaleDateString()}</td>
+                    </tr>`;
+                });
+                html += `</tbody></table>`;
+                container.innerHTML = html;
+
+            } catch (e) {
+                container.innerHTML = '<p class="text-red-500">Error cargando clientes. Verifica el servicio de Auth.</p>';
+            }
+        }
+
+        // --- MODALS & UTILS ---
+        function openProductModal() { document.getElementById('product-modal').classList.remove('hidden'); document.getElementById('product-modal').classList.add('flex'); loadCategoriesDropdown(); }
+        function closeProductModal() { document.getElementById('product-modal').classList.add('hidden'); document.getElementById('product-modal').classList.remove('flex'); }
+        function openCategoryModal() { document.getElementById('category-modal').classList.remove('hidden'); document.getElementById('category-modal').classList.add('flex'); }
+        function closeCategoryModal() { document.getElementById('category-modal').classList.add('hidden'); document.getElementById('category-modal').classList.remove('flex'); }
+        function openStoreModal() { document.getElementById('store-modal').classList.remove('hidden'); document.getElementById('store-modal').classList.add('flex'); }
+        function closeStoreModal() { document.getElementById('store-modal').classList.add('hidden'); document.getElementById('store-modal').classList.remove('flex'); }
+        function openExcelImport() { document.getElementById('excel-modal').classList.remove('hidden'); document.getElementById('excel-modal').classList.add('flex'); }
+        function closeExcelModal() { document.getElementById('excel-modal').classList.add('hidden'); document.getElementById('excel-modal').classList.remove('flex'); }
+        function handleExcelUpload(e) {
+             const file = e.target.files[0];
+             const reader = new FileReader();
+             reader.onload = (evt) => {
+                 const wb = XLSX.read(new Uint8Array(evt.target.result), {type:'array'});
+                 importedData = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                 document.getElementById('import-preview').classList.remove('hidden');
+                 document.getElementById('json-preview-content').textContent = JSON.stringify(importedData,null,2);
+             };
+             reader.readAsArrayBuffer(file);
+        }
+        async function deleteProduct(id) {
+             if(confirm('Eliminar?')) {
+                 await fetch(`${API_URL}/catalog/products/${id}`, { method: 'DELETE' });
+                 loadProducts();
+             }
+        }
+        function initDashboard() { nav('dashboard'); }
+        
+        // --- ORDERS ---
+        async function loadOrders() {
+            const container = document.getElementById('orders-list');
+            container.innerHTML = '<p class="text-center py-4">Cargando pedidos...</p>';
+            try {
+                const res = await fetch(`${API_URL}/orders`);
+                const orders = await res.json();
+                
+                if (orders.length === 0) {
+                    container.innerHTML = '<p class="text-center text-slate-500 py-4">No hay pedidos registrados.</p>';
                     return;
                 }
 
-                const stores = ['Tienda Central', 'Tienda Norte', 'Tienda Sur'];
-
-                let table = `
-                    <table class="w-full text-sm">
-                        <thead class="bg-slate-50 border-b-2 border-slate-200">
+                let html = `
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 border-b">
                             <tr>
-                                <th class="px-4 py-3 text-left font-bold">Producto</th>
-                                ${stores.map(s => `<th class="px-4 py-3 text-center font-bold">${s}</th>`).join('')}
-                                <th class="px-4 py-3 text-center font-bold">Total</th>
+                                <th class="px-6 py-4">ID Pedido</th>
+                                <th class="px-6 py-4">Usuario (ID)</th>
+                                <th class="px-6 py-4">Fecha</th>
+                                <th class="px-6 py-4">Total</th>
+                                <th class="px-6 py-4">Estado</th>
+                                <th class="px-6 py-4">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                 `;
-
-                products.forEach(p => {
-                    const stockValues = stores.map(() => Math.floor(Math.random() * 20));
-                    const total = stockValues.reduce((a, b) => a + b, 0);
-
-                    table += `
+                
+                orders.forEach(o => {
+                    html += `
                         <tr class="hover:bg-slate-50">
-                            <td class="px-4 py-3 font-medium">${p.name}</td>
-                            ${stockValues.map(val => `
-                                <td class="px-4 py-3 text-center">
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold ${val < 5 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${val}</span>
-                                </td>
-                            `).join('')}
-                            <td class="px-4 py-3 text-center font-bold">${total}</td>
+                            <td class="px-6 py-4 font-mono text-xs">${o.id}</td>
+                            <td class="px-6 py-4 font-mono text-xs">${o.user_id}</td>
+                            <td class="px-6 py-4">${new Date(o.created_at).toLocaleDateString()}</td>
+                            <td class="px-6 py-4 font-bold">$${parseFloat(o.total).toFixed(2)}</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">${o.status}</span></td>
+                            <td class="px-6 py-4">
+                                <button onclick="alert('Detalles del pedido: ' + '${o.id}')" class="text-blue-600 hover:underline">Ver Detalles</button>
+                            </td>
                         </tr>
                     `;
                 });
-
-                table += `</tbody></table>`;
-                container.innerHTML = table;
-            } catch (error) {
-                container.innerHTML = '<p class="text-center text-red-500 py-8">Error al cargar inventario</p>';
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (e) {
+                container.innerHTML = '<p class="text-center text-red-500">Error cargando pedidos</p>';
             }
         }
-
-        // --- EXCEL IMPORT ---
-        function openExcelImport() {
-            document.getElementById('excel-modal').classList.remove('hidden');
-            document.getElementById('excel-modal').classList.add('flex');
-            lucide.createIcons();
-        }
-
-        function closeExcelModal() {
-            document.getElementById('excel-modal').classList.add('hidden');
-            document.getElementById('excel-modal').classList.remove('flex');
-            cancelImport();
-        }
-
-        function handleExcelUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function (evt) {
-                const data = new Uint8Array(evt.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-
-                importedData = XLSX.utils.sheet_to_json(firstSheet);
-
-                document.getElementById('import-preview').classList.remove('hidden');
-                document.getElementById('preview-count').textContent = importedData.length;
-                document.getElementById('json-preview-content').textContent = JSON.stringify(importedData.slice(0, 3), null, 2) + (importedData.length > 3 ? '\n...' : '');
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        function cancelImport() {
-            importedData = [];
-            document.getElementById('import-preview').classList.add('hidden');
-            document.getElementById('excel-file').value = '';
-        }
-
-        async function processImport() {
-            if (importedData.length === 0) return;
-
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'Procesando...';
-            btn.disabled = true;
-
-            let successCount = 0;
-
-            for (const item of importedData) {
-                try {
-                    const payload = {
-                        name: item.name || item.Nombre,
-                        description: item.description || item.Descripcion || '',
-                        price: item.price || item.Precio,
-                        sku: item.sku || item.SKU || `GEN-${Math.floor(Math.random() * 10000)}`,
-                        category: item.category || item.Categoria || 'General',
-                        image_url: item.image_url || item.Imagen || 'https://via.placeholder.com/400',
-                        stock: item.stock || 0
-                    };
-
-                    await fetch(`${API_URL}/catalog/products`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+        
+        // --- INVENTORY MATRIX ---
+        async function loadInventoryMatrix() {
+            try {
+                const [products, stocks, stores] = await Promise.all([
+                    fetch(`${API_URL}/catalog/products`).then(r=>r.json()),
+                    fetch(`${API_URL}/inventory/stock`).then(r=>r.json()),
+                    fetch(`${API_URL}/inventory/stores`).then(r=>r.json())
+                ]);
+                
+                let html = `<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th>Producto</th>`;
+                stores.forEach(s => html += `<th>${s.name}</th>`);
+                html += `</tr></thead><tbody>`;
+                
+                products.forEach(p => {
+                    html += `<tr class="border-b"><td class="p-2">${p.name}</td>`;
+                    stores.forEach(s => {
+                        const entry = stocks.find(k => k.product_id === p.id && k.store_id === s.id);
+                        html += `<td class="p-2 text-center">${entry ? entry.quantity : 0}</td>`;
                     });
-                    successCount++;
-                } catch (error) {
-                    console.error('Error importando item:', item);
-                }
+                    html += `</tr>`;
+                });
+                html += `</tbody></table>`;
+                document.getElementById('inventory-matrix').innerHTML = html;
+            } catch(e) {
+                 document.getElementById('inventory-matrix').innerHTML = '<p>Error cargando inventario</p>';
             }
-
-            alert(`Importación completada: ${successCount} productos agregados.`);
-            closeExcelModal();
-            loadProducts();
-            updateStats();
-            btn.innerHTML = originalText;
-            btn.disabled = false;
         }
     </script>
 </body>
-
 </html>

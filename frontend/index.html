@@ -104,9 +104,6 @@
 
         <!-- HERO SECTION -->
         <div class="hero-bg text-white py-20 relative overflow-hidden">
-            <div
-                class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
-            </div>
             <div class="container mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-10 md:mb-0">
                     <div
@@ -122,9 +119,10 @@
                     </button>
                 </div>
                 <div class="md:w-1/2 flex justify-center">
-                    <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80"
-                        alt="Motor"
-                        class="rounded-2xl shadow-2xl border-4 border-slate-700/50 w-4/5 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                     <!-- Image Placeholder -->
+                     <div class="bg-slate-800 rounded-2xl w-full h-64 flex items-center justify-center text-slate-600 font-bold">
+                        IMAGEN DESTACADA
+                     </div>
                 </div>
             </div>
         </div>
@@ -306,7 +304,12 @@
                 if (category) url += `?category=${category}`;
 
                 const res = await fetch(url);
-                if (!res.ok) throw new Error('Error al conectar con Microservicio Catálogo');
+                // Ensure response is OK and content-type is JSON before parsing
+                if (!res.ok) throw new Error(`Server error: ${res.status}`);
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("Invalid response format from server");
+                }
 
                 const products = await res.json();
                 state.products = products;
@@ -314,15 +317,10 @@
 
             } catch (error) {
                 console.error(error);
-                // FALLBACK DEMO (Por si el backend falla en la presentación)
-                const demoData = [
-                    { id: 1, name: "Kit de Frenos Cerámicos", price: 120.00, sku: "BRK-001", category: "Frenos", description: "Alto rendimiento y durabilidad.", image_url: "https://images.unsplash.com/photo-1661331771971-5507945db594?w=400" },
-                    { id: 2, name: "Batería 12V Premium", price: 150.50, sku: "BAT-009", category: "Eléctrico", description: "Garantía de 24 meses.", image_url: "https://images.unsplash.com/photo-1623126908029-58cb08a2b272?w=400" },
-                    { id: 3, name: "Aceite Sintético 5W-30", price: 45.00, sku: "OIL-530", category: "Motor", description: "Protección total para tu motor.", image_url: "https://images.unsplash.com/photo-1594950965823-74b868664157?w=400" }
-                ];
-                state.products = demoData;
-                renderProducts(demoData);
-                showToast('Modo DEMO (Backend desconectado)', 'error');
+                grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-10">
+                    <p class="font-bold">Error cargando productos</p>
+                    <p class="text-sm">${error.message}</p>
+                </div>`;
             }
         }
 
@@ -336,11 +334,16 @@
             }
 
             products.forEach(p => {
+                // Handle placeholder if image is missing or failed
+                const imgUrl = (p.image_url && p.image_url.trim() !== '' && p.image_url !== 'placeholder.png') ? p.image_url : 'placeholder.png';
+                
                 const card = document.createElement('div');
                 card.className = "bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300 group";
                 card.innerHTML = `
                     <div class="h-56 overflow-hidden relative bg-slate-100">
-                        <img src="${p.image_url || 'https://via.placeholder.com/400?text=No+Image'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <img src="${imgUrl}" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='placeholder.png'">
                         <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-900 uppercase tracking-wider">
                             ${p.category || 'Repuesto'}
                         </div>
@@ -353,7 +356,7 @@
                                 <span class="text-xs text-slate-400 font-medium">Precio</span>
                                 <span class="text-2xl font-black text-blue-600">$${parseFloat(p.price).toFixed(2)}</span>
                             </div>
-                            <button onclick="addToCart(${p.id})" class="bg-slate-900 text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors shadow-lg shadow-slate-900/20">
+                            <button onclick="addToCart('${p.id}')" class="bg-slate-900 text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors shadow-lg shadow-slate-900/20">
                                 <i data-lucide="plus" class="w-5 h-5"></i>
                             </button>
                         </div>
@@ -366,17 +369,23 @@
 
         // --- CART LOGIC ---
         function addToCart(id) {
-            const product = state.products.find(p => p.id === id);
+            // Ensure ID comparison works (string vs number)
+            const product = state.products.find(p => String(p.id) === String(id));
             if (!product) return;
 
-            const existing = state.cart.find(item => item.id === id);
+            const existing = state.cart.find(item => String(item.id) === String(id));
             if (existing) existing.quantity++;
             else state.cart.push({ ...product, quantity: 1 });
 
             saveCart();
             showToast(`${product.name} agregado`);
-            // NO abrir el carrito automáticamente (fix solicitado)
-            updateCartUI();
+            
+            // Open cart automatically as requested
+            const panel = document.getElementById('cart-panel');
+            const backdrop = document.getElementById('cart-backdrop');
+            if (panel.classList.contains('translate-x-full')) {
+                toggleCart();
+            }
         }
 
         function saveCart() {
@@ -425,15 +434,22 @@
             } else {
                 state.cart.forEach((item, idx) => {
                     total += item.price * item.quantity;
+                    // Use placeholder for cart items if needed
+                    const imgUrl = (item.image_url && item.image_url !== 'placeholder.png') ? item.image_url : 'placeholder.png';
+                    
                     const row = document.createElement('div');
                     row.className = "flex gap-4 items-center bg-slate-50 p-3 rounded-xl";
                     row.innerHTML = `
-                        <img src="${item.image_url}" class="w-16 h-16 rounded-lg object-cover bg-white border border-slate-100">
+                        <img src="${imgUrl}" class="w-16 h-16 rounded-lg object-cover bg-white border border-slate-100" onerror="this.src='placeholder.png'">
                         <div class="flex-1">
                             <h4 class="font-bold text-sm text-slate-900 line-clamp-1">${item.name}</h4>
                             <div class="flex items-center gap-2 mt-1">
                                 <span class="text-xs font-bold text-blue-600">$${item.price}</span>
-                                <span class="text-xs text-slate-400">x${item.quantity}</span>
+                                <div class="flex items-center gap-2">
+                                   <button onclick="updateQty(${idx}, -1)" class="text-slate-400 hover:text-slate-600">-</button>
+                                   <span class="text-xs text-slate-600 font-medium">${item.quantity}</span>
+                                   <button onclick="updateQty(${idx}, 1)" class="text-slate-400 hover:text-slate-600">+</button>
+                                </div>
                             </div>
                         </div>
                         <button onclick="removeFromCart(${idx})" class="text-slate-400 hover:text-red-500 transition-colors p-2">
@@ -445,6 +461,12 @@
             }
             totalEl.textContent = `$${total.toFixed(2)}`;
             lucide.createIcons();
+        }
+
+        function updateQty(idx, change) {
+            state.cart[idx].quantity += change;
+            if (state.cart[idx].quantity <= 0) state.cart.splice(idx, 1);
+            saveCart();
         }
 
         function removeFromCart(idx) {
@@ -461,9 +483,14 @@
                 return;
             }
 
+            const btn = event.target; // simple ref to button
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Procesando...';
+            btn.disabled = true;
+
             try {
                 const orderData = {
-                    user_id: state.user.id || 1, // Fallback para demo
+                    user_id: state.user.id,
                     items: state.cart.map(i => ({ product_id: i.id, quantity: i.quantity }))
                 };
 
@@ -472,18 +499,23 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(orderData)
                 });
+                
+                const result = await res.json();
 
                 if (res.ok) {
                     state.cart = [];
                     saveCart();
                     toggleCart();
-                    showToast('¡Compra exitosa! Gracias por tu preferencia.');
+                    showToast('¡Compra exitosa! ID Pedido: ' + result.id);
                 } else {
-                    throw new Error('Error procesando orden');
+                    throw new Error(result.error || 'Error procesando orden');
                 }
             } catch (e) {
                 console.error(e);
-                showToast('Error procesando orden (Backend no respondió)', 'error');
+                showToast(e.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         }
 
@@ -521,28 +553,64 @@
         async function handleLogin(e) {
             e.preventDefault();
             const email = e.target.email.value;
-            // Auth Simulation (replace with fetch to /auth/login)
-            state.user = { name: email.split('@')[0], email };
-            localStorage.setItem('client_user', JSON.stringify(state.user));
-            closeModal();
-            updateAuthUI();
-            showToast('Bienvenido de nuevo');
+            const password = e.target.password.value;
+            
+            try {
+                const res = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, password})
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    state.user = data.user;
+                    state.token = data.token;
+                    localStorage.setItem('client_user', JSON.stringify(state.user));
+                    localStorage.setItem('client_token', state.token);
+                    closeModal();
+                    updateAuthUI();
+                    showToast('Bienvenido de nuevo');
+                } else {
+                    showToast(data.error || 'Error al ingresar', 'error');
+                }
+            } catch (error) {
+                showToast('Error de conexión', 'error');
+            }
         }
 
         async function handleRegister(e) {
             e.preventDefault();
-            // Register Simulation
-            const data = Object.fromEntries(new FormData(e.target));
-            state.user = { name: data.firstName, email: data.email };
-            localStorage.setItem('client_user', JSON.stringify(state.user));
-            closeModal();
-            updateAuthUI();
-            showToast('Cuenta creada correctamente');
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const res = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await res.json();
+                
+                if (res.ok) {
+                    // Auto login simulation or ask to login
+                    showToast('Cuenta creada. Por favor inicia sesión.');
+                    switchAuth('login');
+                } else {
+                    showToast(result.error || 'Error al registrarse', 'error');
+                }
+            } catch (error) {
+                showToast('Error de conexión', 'error');
+            }
         }
 
         function logout() {
             state.user = null;
+            state.token = null;
             localStorage.removeItem('client_user');
+            localStorage.removeItem('client_token');
             updateAuthUI();
             showToast('Sesión cerrada');
         }
@@ -564,5 +632,4 @@
         }
     </script>
 </body>
-
 </html>

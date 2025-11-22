@@ -167,5 +167,36 @@ router.post('/import/stock', async (req, res) => {
     }
 });
 
+// Reduce stock (Checkout)
+router.patch('/stock/reduce', async (req, res) => {
+    const { productId, storeId, quantity } = req.body;
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        
+        // Check current stock
+        const { rows } = await client.query(
+            'SELECT quantity FROM stock WHERE product_id = $1 AND store_id = $2 FOR UPDATE',
+            [productId, storeId]
+        );
+
+        if (rows.length === 0 || rows[0].quantity < quantity) {
+            throw new Error('Insufficient stock');
+        }
+
+        await client.query(
+            'UPDATE stock SET quantity = quantity - $1 WHERE product_id = $2 AND store_id = $3',
+            [quantity, productId, storeId]
+        );
+
+        await client.query('COMMIT');
+        res.json({ ok: true, newQuantity: rows[0].quantity - quantity });
+    } catch (e) {
+        await client.query('ROLLBACK');
+        res.status(400).json({ error: e.message });
+    } finally {
+        client.release();
+    }
+});
 
 module.exports = router;

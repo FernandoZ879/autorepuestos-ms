@@ -1,4 +1,3 @@
-
 const { Router } = require('express');
 const { pool } = require('./db');
 const fetch = require('node-fetch');
@@ -7,105 +6,98 @@ const router = Router();
 
 // Add to cart
 router.post('/cart', async (req, res) => {
-    // This is a simplified implementation. A real cart would be associated with a user session.
     const { productId, quantity } = req.body;
     res.json({ productId, quantity });
 });
 
 // Get cart
 router.get('/cart', async (req, res) => {
-    // This is a simplified implementation. A real cart would be associated with a user session.
     res.json([]);
 });
 
 // Create Order (Checkout)
 router.post('/', async (req, res) => {
-    const { userId, storeId, items } = req.body;
+    const { user_id, items } = req.body; // Client sends user_id and items
 
-    if (!userId || !items || items.length === 0) {
+    if (!user_id || !items || items.length === 0) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    console.log('Received order request', { userId, storeId, itemsLength: items.length });
     const client = await pool.connect();
-    console.log('Connected to DB');
     try {
         await client.query('BEGIN');
-        console.log('Transaction started');
         let total = 0;
+        const processedItems = [];
 
-        // Verify stock and calculate total
+        // 1. Validate Items & Check Stock
         for (const item of items) {
-            // Fetch product details from catalog service
-            // Note: Using 'catalog' hostname since this runs inside docker network
-            // But wait, if the user runs this locally, 'catalog' won't resolve.
-            // The previous error "port already allocated" suggests the user might be running things locally too.
-            // However, the architecture is Docker. The gateway is at 'gateway:3000' or 'localhost:3000' from outside.
-            // Inside the network, 'catalog:3002' is the direct service.
-            // The gateway is also reachable at 'gateway:3000'.
-            // Let's try using the direct service URL 'http://catalog:3002/products/...' to avoid gateway overhead/issues inside the network.
-            // OR keep using localhost if we assume host networking or mapped ports? 
-            // Docker compose uses service names. 'http://catalog:3002' is safest for inter-service communication.
+            const pid = item.product_id;
+            const qty = item.quantity;
 
-            const productRes = await fetch(`http://catalog:3002/products/${item.productId}`);
-            if (!productRes.ok) {
-                throw new Error(`Failed to fetch product ${item.productId}`);
-            }
-            const product = await productRes.json();
-            const availableStock = product.stock || 0;
-            if (availableStock < item.quantity) {
-                throw new Error(`Insufficient stock for product ${product.name || item.productId}`);
-            }
-            // Use price from product if not provided, or trust client? 
-            // Better to trust product price from DB.
-            const price = product.price ?? item.price ?? 0;
-            total += price * item.quantity;
-
-            // Store product data for later stock update
-            item._product = product;
-            item._finalPrice = price;
+            // Fetch Product Details (Catalog)
+            const catRes = await fetch(`http://catalog:3002/products/${pid}`);
+            if (!catRes.ok) throw new Error(`Product ${pid} not found in catalog`);
+            const product = await catRes.json();
+            
+            // Fetch Stock (Inventory)
+            const invRes = await fetch(`http://inventory:3004/stock?productId=${pid}`);
+            if (!invRes.ok) throw new Error(`Could not check stock for ${product.name}`);
+            const stocks = await invRes.json();
+            
+            // Find a store with enough stock
+            const validStock = stocks.find(s => s.quantity >= qty);
+            if (!validStock) throw new Error(`Insufficient stock for ${product.name}`);
+            
+            total += parseFloat(product.price) * qty;
+            processedItems.push({
+                product_id: pid,
+                quantity: qty,
+                price: product.price,
+                store_id: validStock.store_id // Assigning the store that fulfills the order
+            });
         }
 
-        console.log('Calculated total:', total);
+        // 2. Create Order
+        // We just pick the store of the first item as the "primary" store for the order record, 
+        // or null if mixed. For simplicity, let's say null or the first one.
+        const mainStoreId = processedItems[0].store_id; 
+
         const { rows } = await client.query(
             'INSERT INTO orders (user_id, store_id, status, total) VALUES ($1, $2, $3, $4) RETURNING id',
-            [userId, storeId || null, 'PENDING', total]
+            [user_id, mainStoreId, 'PENDING', total]
         );
         const orderId = rows[0].id;
-        console.log('Order created:', orderId);
 
-        // Insert order items and decrement stock
-        for (const item of items) {
+        // 3. Insert Items & Reduce Stock
+        for (const item of processedItems) {
             await client.query(
                 'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)',
-                [orderId, item.productId || item.id, item.quantity, item._finalPrice]
+                [orderId, item.product_id, item.quantity, item.price]
             );
 
-            // Decrement stock via catalog PATCH endpoint
-            // We can use the PATCH /products/:id/stock endpoint we created earlier
-            const newStock = (item._product.stock || 0) - item.quantity;
-
-            const updateRes = await fetch(`http://catalog:3002/products/${item.productId}/stock`, {
+            // Reduce Stock in Inventory
+            const reduceRes = await fetch(`http://inventory:3004/stock/reduce`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ stock: newStock })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    productId: item.product_id,
+                    storeId: item.store_id,
+                    quantity: item.quantity
+                })
             });
-
-            if (!updateRes.ok) {
-                console.error(`Failed to update stock for product ${item.productId}`);
-                // We should probably throw here to rollback the transaction
-                throw new Error(`Failed to update stock for product ${item.productId}`);
+            
+            if(!reduceRes.ok) {
+                throw new Error(`Failed to reduce stock for item ${item.product_id}`);
             }
         }
-        console.log('Items inserted and stock updated');
 
         await client.query('COMMIT');
-        console.log('Transaction committed');
         res.status(201).json({ id: orderId, status: 'PENDING', total });
+
     } catch (e) {
         await client.query('ROLLBACK');
         console.error('Order creation error:', e);
-        res.status(400).json({ ok: false, error: String(e) });
+        res.status(400).json({ error: e.message });
     } finally {
         client.release();
     }
@@ -113,21 +105,29 @@ router.post('/', async (req, res) => {
 
 // Get all orders
 router.get('/', async (_req, res) => {
-    const { rows } = await pool.query('SELECT * FROM orders');
-    res.json(rows);
+    try {
+        const { rows } = await pool.query('SELECT * FROM orders ORDER BY created_at DESC');
+        res.json(rows);
+    } catch(e) {
+        res.status(500).json({error: e.message});
+    }
 });
 
 // Get order by id
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
-    const { rows } = await pool.query('SELECT * FROM orders WHERE id = $1', [id]);
-    if (rows.length === 0) {
-        return res.status(404).json({ error: 'Order not found' });
+    try {
+        const { rows } = await pool.query('SELECT * FROM orders WHERE id = $1', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+        const order = rows[0];
+        const itemsResult = await pool.query('SELECT * FROM order_items WHERE order_id = $1', [id]);
+        order.items = itemsResult.rows;
+        res.json(order);
+    } catch(e) {
+        res.status(500).json({error: e.message});
     }
-    const order = rows[0];
-    const itemsResult = await pool.query('SELECT * FROM order_items WHERE order_id = $1', [id]);
-    order.items = itemsResult.rows;
-    res.json(order);
 });
 
 module.exports = router;
