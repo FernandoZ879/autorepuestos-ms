@@ -1,0 +1,190 @@
+# ===================================
+# AUTOREPUESTOS MS - .gitignore
+# ===================================
+
+# ===================================
+# ARCHIVOS DE ENTORNO Y SECRETOS
+# ===================================
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# ===================================
+# NODE.JS
+# ===================================
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Archivos de caché
+.npm
+.eslintcache
+.node_repl_history
+
+# Archivos de build
+dist/
+build/
+*.tsbuildinfo
+
+# ===================================
+# DOCKER
+# ===================================
+# Datos locales (bind mounts - ya no usamos pero por si acaso)
+data/
+volumes/
+postgres-data/
+
+# Logs de Docker
+docker-compose.override.yml
+*.log
+
+# ===================================
+# BASES DE DATOS
+# ===================================
+# Dumps y backups
+*.sql
+*.dump
+*.backup
+*.tar.gz
+*_backup.tar.gz
+backups/
+
+# Archivos de PostgreSQL locales
+*.pgdata
+pgdata/
+
+# ===================================
+# SISTEMA OPERATIVO
+# ===================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ===================================
+# IDEs Y EDITORES
+# ===================================
+# VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains (WebStorm, IntelliJ, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ===================================
+# ARCHIVOS TEMPORALES Y DE DEBUG
+# ===================================
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+*.cache
+tmp/
+temp/
+
+# Archivos de debugging
+debug.log
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage y testing
+coverage/
+.nyc_output/
+*.lcov
+.coverage
+htmlcov/
+
+# ===================================
+# ARCHIVOS DE PROYECTO ESPECÍFICOS
+# ===================================
+# Archivos de estructura/análisis (generados por scripts)
+*_estructura.csv
+*_estructura.txt
+concat_and_list.py
+
+# Reportes y documentos temporales
+*_REPORT.md
+!MODERNIZATION_REPORT.md
+*_DEBUG.md
+RESOLUCION_*.md
+debugging_*.md
+
+# ===================================
+# ARCHIVOS DE IMPORTACIÓN/EXPORTACIÓN
+# ===================================
+# Archivos Excel de prueba (mantener solo el template)
+# template_importacion.xlsx se mantiene
+*_importacion.xlsx
+!template_importacion.xlsx
+
+# CSVs de datos (excepto assets del frontend)
+*.csv
+!frontend/assets/*.csv
+
+# ===================================
+# CERTIFICADOS Y LLAVES
+# ===================================
+# SSL/TLS
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+certs/
+certificates/
+
+# SSH
+*.pub
+id_rsa
+id_dsa
+
+# ===================================
+# OTROS
+# ===================================
+# Archivos de configuración local
+config.local.js
+config.local.json
+
+# Archivos de lock (opcional - algunos proyectos los commitean)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoRepuestos - E-commerce Multi-tienda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        .product-card {
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stock-bar {
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .modal {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-primary {
+            @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors;
+        }
+
+        .btn-success {
+            @apply bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors;
+        }
+
+        .btn-danger {
+            @apply bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors;
+        }
+
+        .btn-warning {
+            @apply bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition-colors;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 cursor-pointer" onclick="showView('home')">
+                        <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                            <i data-lucide="car" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <span class="font-bold text-xl">AutoRepuestos</span>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex space-x-6">
+                    <button onclick="showView('catalogo')"
+                        class="text-gray-700 hover:text-blue-600 font-medium">Catálogo</button>
+                    <button onclick="showView('contacto')"
+                        class="text-gray-700 hover:text-blue-600 font-medium">Contacto</button>
+                    <button id="adminBtn" onclick="showView('admin')"
+                        class="text-gray-700 hover:text-blue-600 font-medium hidden">Admin</button>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button onclick="showView('carrito')" class="relative p-2 text-gray-700 hover:text-blue-600">
+                        <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                        <span id="cartCount"
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button id="loginBtn" onclick="showLoginModal()" class="btn-primary">Iniciar Sesión</button>
+                    <button id="logoutBtn" onclick="logout()" class="btn-danger hidden">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Home View -->
+        <div id="home" class="view active">
+            <div class="text-center py-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    Repuestos Plásticos Externos para Autos
+                </h1>
+                <p class="text-xl text-gray-600 mb-8">
+                    Compra online, consulta disponibilidad por tienda y recibe reportes claros de tus ventas
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                    <div onclick="showView('catalogo')"
+                        class="bg-white p-8 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-shadow">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="grid-3x3" class="w-8 h-8 text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Ver Catálogo</h3>
+                        <p class="text-gray-600">Explora nuestro inventario multi-tienda</p>
+                    </div>
+
+                    <div onclick="showView('contacto')"
+                        class="bg-white p-8 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-shadow">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="message-circle" class="w-8 h-8 text-green-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Contacto</h3>
+                        <p class="text-gray-600">Consulta por WhatsApp al instante</p>
+                    </div>
+
+                    <div id="adminCard" onclick="showView('admin')"
+                        class="bg-white p-8 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-shadow hidden">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="bar-chart-3" class="w-8 h-8 text-purple-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Panel Admin</h3>
+                        <p class="text-gray-600">Gestiona inventarios y reportes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catalog View -->
+        <div id="catalogo" class="view">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Catálogo de Productos</h2>
+                <p class="text-gray-600">Selecciona una tienda para ver inventario específico</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Filtrar por Tienda:</label>
+                <select id="storeFilter" onchange="filterByStore()"
+                    class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-64">
+                    <option value="">Todas las Tiendas</option>
+                </select>
+            </div>
+
+            <div id="catalogGrid" class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Product Detail View -->
+        <div id="producto" class="view">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <button onclick="showView('catalogo')" class="mb-4 text-blue-600 hover:text-blue-800 flex items-center">
+                    <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+                    Volver al catálogo
+                </button>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <img id="productImage" src="/placeholder.png" alt=""
+                            class="w-full h-80 object-cover rounded-lg">
+                    </div>
+
+                    <div>
+                        <h1 id="productName" class="text-3xl font-bold mb-4"></h1>
+                        <p id="productDescription" class="text-gray-600 mb-4"></p>
+                        <p class="text-3xl font-bold text-blue-600 mb-4">Bs. <span id="productPrice"></span></p>
+
+                        <div class="mb-6">
+                            <h3 class="font-semibold mb-2">Disponibilidad por Tienda:</h3>
+                            <div id="storeStock" class="space-y-2">
+                                <!-- Stock info will be loaded here -->
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-4">
+                            <button onclick="addToCartFromDetail()" class="btn-primary flex-1">
+                                <i data-lucide="shopping-cart" class="w-4 h-4 mr-2 inline"></i>
+                                Agregar al Carrito
+                            </button>
+                            <button id="whatsAppBtn" class="btn-success">
+                                <i data-lucide="message-circle" class="w-4 h-4 mr-2 inline"></i>
+                                WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart View -->
+        <div id="carrito" class="view">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Carrito de Compras</h2>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div id="cartItems" class="space-y-4">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4">Resumen</h3>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <span>Subtotal:</span>
+                            <span>Bs. <span id="cartSubtotal">0.00</span></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Envío:</span>
+                            <span>Bs. <span id="cartShipping">0.00</span></span>
+                        </div>
+                        <div class="border-t pt-2 flex justify-between font-bold text-lg">
+                            <span>Total:</span>
+                            <span>Bs. <span id="cartTotal">0.00</span></span>
+                        </div>
+                    </div>
+
+                    <button onclick="checkout()" class="btn-primary w-full mb-2">
+                        Proceder al Pago
+                    </button>
+                    <button onclick="showView('catalogo')" class="btn-warning w-full">
+                        Seguir Comprando
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact View -->
+        <div id="contacto" class="view">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Contáctanos por WhatsApp</h2>
+
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="message-circle" class="w-10 h-10 text-green-600"></i>
+                        </div>
+                        <p class="text-gray-600 mb-4">
+                            Consulta disponibilidad, precios y realiza cotizaciones al instante
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Producto de interés:</label>
+                            <input id="whatsappProduct" type="text" placeholder="Ej: Parachoques delantero Modelo X"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Cantidad:</label>
+                            <input id="whatsappQuantity" type="number" min="1" value="1"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tienda preferida:</label>
+                            <select id="whatsappStore" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="">Cualquier tienda</option>
+                            </select>
+                        </div>
+
+                        <button onclick="sendWhatsApp()" class="btn-success w-full">
+                            <i data-lucide="message-circle" class="w-4 h-4 mr-2 inline"></i>
+                            Enviar Consulta por WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin" class="view">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Panel de Administración</h2>
+                <p class="text-gray-600">Gestión de inventarios, tiendas y reportes</p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Productos</p>
+                            <p id="totalProducts" class="text-2xl font-bold">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i data-lucide="package" class="w-6 h-6 text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Tiendas</p>
+                            <p id="totalStores" class="text-2xl font-bold">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <i data-lucide="store" class="w-6 h-6 text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Total Stock</p>
+                            <p id="totalStock" class="text-2xl font-bold">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <i data-lucide="layers" class="w-6 h-6 text-yellow-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Ventas</p>
+                            <p id="totalSales" class="text-2xl font-bold">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i data-lucide="dollar-sign" class="w-6 h-6 text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <button onclick="showAdminSection('inventarios')"
+                    class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition-shadow text-left">
+                    <h3 class="font-semibold mb-2">📦 Gestionar Inventarios</h3>
+                    <p class="text-gray-600 text-sm">Transferir stock entre tiendas</p>
+                </button>
+
+                <button onclick="showAdminSection('productos')"
+                    class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition-shadow text-left">
+                    <h3 class="font-semibold mb-2">🏷️ Productos</h3>
+                    <p class="text-gray-600 text-sm">Agregar, editar o eliminar productos</p>
+                </button>
+
+                <button onclick="showAdminSection('reportes')"
+                    class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition-shadow text-left">
+                    <h3 class="font-semibold mb-2">📊 Reportes</h3>
+                    <p class="text-gray-600 text-sm">Ventas y eficiencia por tienda</p>
+                </button>
+
+                <div class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition-shadow text-left cursor-pointer"
+                    onclick="document.getElementById('excelInput').click()">
+                    <h3 class="font-semibold mb-2">📥 Importación Masiva</h3>
+                    <p class="text-gray-600 text-sm">Cargar Excel (Productos, Tiendas, Stock)</p>
+                    <input type="file" id="excelInput" class="hidden" accept=".xlsx, .xls"
+                        onchange="handleExcelUpload(this)">
+                </div>
+            </div>
+
+            <!-- Admin Sections -->
+            <div id="adminInventarios" class="admin-section hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4">Transferir Inventario</h3>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Producto:</label>
+                            <select id="transferProduct" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="">Selecciona un producto</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Cantidad:</label>
+                            <input id="transferQuantity" type="number" min="1"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Desde Tienda:</label>
+                            <select id="transferFromStore" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="">Selecciona tienda origen</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Hacia Tienda:</label>
+                            <select id="transferToStore" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="">Selecciona tienda destino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="transferStock()" class="btn-primary mt-4">
+                        <i data-lucide="truck" class="w-4 h-4 mr-2 inline"></i>
+                        Transferir Stock
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
+                    <h3 class="text-xl font-semibold mb-4">Inventario por Tienda</h3>
+                    <div id="inventoryTable" class="overflow-x-auto">
+                        <!-- Inventory table will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="adminProductos" class="admin-section hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold">Gestión de Productos</h3>
+                        <button onclick="showAddProductModal()" class="btn-success">
+                            <i data-lucide="plus" class="w-4 h-4 mr-2 inline"></i>
+                            Nuevo Producto
+                        </button>
+                    </div>
+
+                    <div id="productsTable" class="overflow-x-auto">
+                        <!-- Products table will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="adminReportes" class="admin-section hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4">Reportes de Ventas</h3>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-semibold mb-2">Ventas por Tienda</h4>
+                            <div id="salesByStore" class="space-y-2">
+                                <!-- Sales data will be loaded here -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold mb-2">Top 10 Productos Más Vendidos</h4>
+                            <div id="topProducts" class="space-y-2">
+                                <!-- Top products will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="generateSalesReport()" class="btn-primary">
+                        <i data-lucide="download" class="w-4 h-4 mr-2 inline"></i>
+                        Descargar Reporte Completo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="text-center">
+                <p class="text-gray-400">© 2024 AutoRepuestos - Sistema Multi-tienda</p>
+                <p class="text-gray-500 text-sm mt-2">Gestión integral de inventarios y ventas</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 modal hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-6">Iniciar Sesión</h3>
+
+            <div class="space-y-4">
+                <div id="nameField" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre:</label>
+                    <input id="loginName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email:</label>
+                    <input id="loginEmail" type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña:</label>
+                    <input id="loginPassword" type="password"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                </div>
+
+                <div id="roleField" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Rol:</label>
+                    <select id="loginRole" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                        <option value="CLIENTE">Cliente</option>
+                        <option value="ADMIN">Admin</option>
+                        <option value="MANAGER">Manager</option>
+                    </select>
+                </div>
+
+                <div class="flex space-x-4 pt-4">
+                    <button id="authActionBtn" onclick="login()" class="btn-primary flex-1">Ingresar</button>
+                    <button onclick="closeLoginModal()" class="btn-warning">Cancelar</button>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center text-sm text-gray-600">
+                <button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 hover:underline">¿No tienes
+                    cuenta? Regístrate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="fixed inset-0 modal hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold mb-6">Nuevo Producto</h3>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre:</label>
+                    <input id="newProductName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Slug (URL):</label>
+                    <input id="newProductSlug" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Descripción:</label>
+                    <textarea id="newProductDescription" rows="3"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Precio (Bs.):</label>
+                    <input id="newProductPrice" type="number" step="0.01"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">URL Imagen:</label>
+                    <input id="newProductImage" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Stock por Tienda:</label>
+                    <div id="newProductStock" class="space-y-2">
+                        <!-- Stock inputs will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex space-x-4 pt-6">
+                <button onclick="addProduct()" class="btn-success">Guardar Producto</button>
+                <button onclick="closeAddProductModal()" class="btn-warning">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./src/bootstrap.js"></script>
+</body>
+
+</html>

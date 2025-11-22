@@ -1,0 +1,6 @@
+name,slug,description,price,imageUrl,categoryName
+Filtro de aceite,filtro-aceite,Filtro de aceite para motor,10.00,https://via.placeholder.com/150,Filtros
+Bujía,bujia,Bujía de encendido,5.00,https://via.placeholder.com/150,Motor
+Pastillas de freno,pastillas-freno,Pastillas de freno delanteras,25.00,https://via.placeholder.com/150,Frenos
+Amortiguador,amortiguador,Amortiguador delantero,50.00,https://via.placeholder.com/150,Suspensión
+Correa de distribución,correa-distribucion,Correa de distribución para motor,30.00,https://via.placeholder.com/150,Motor

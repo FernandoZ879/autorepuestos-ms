@@ -1,0 +1,175 @@
+services:
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - AUTH_URL=http://auth:3000
+      - CATALOG_URL=http://catalog:3001
+      - INVENTORY_URL=http://inventory:3002
+      - ORDERS_URL=http://orders:3003
+      - REPORTS_URL=http://reports:3004
+    depends_on:
+      - auth
+      - catalog
+      - inventory
+      - orders
+      - reports
+
+  auth:
+    build: ./services/auth
+    environment:
+      - DB_HOST=db-auth
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=authdb
+      - JWT_SECRET=secret
+    depends_on:
+      db-auth:
+        condition: service_healthy
+
+  db-auth:
+    image: postgres:18
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=authdb
+      - PGDATA=/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  catalog:
+    build: ./services/catalog
+    environment:
+      - DB_HOST=db-catalog
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=catalogdb
+    depends_on:
+      db-catalog:
+        condition: service_healthy
+
+  db-catalog:
+    image: postgres:18
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=catalogdb
+      - PGDATA=/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    volumes:
+      - catalog_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  inventory:
+    build: ./services/inventory
+    environment:
+      - DB_HOST=db-inventory
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=inventorydb
+    depends_on:
+      db-inventory:
+        condition: service_healthy
+
+  db-inventory:
+    image: postgres:18
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=inventorydb
+      - PGDATA=/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
+    volumes:
+      - inventory_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  orders:
+    build: ./services/orders
+    environment:
+      - DB_HOST=db-orders
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=ordersdb
+    depends_on:
+      db-orders:
+        condition: service_healthy
+
+  db-orders:
+    image: postgres:18
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ordersdb
+      - PGDATA=/var/lib/postgresql/data
+    ports:
+      - "5437:5432"
+    volumes:
+      - orders_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  reports:
+    build: ./services/reports
+    environment:
+      - DB_HOST=db-reports
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=reportsdb
+    depends_on:
+      db-reports:
+        condition: service_healthy
+
+  db-reports:
+    image: postgres:18
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=reportsdb
+      - PGDATA=/var/lib/postgresql/data
+    ports:
+      - "5438:5432"
+    volumes:
+      - reports_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:80"
+
+volumes:
+  auth_data:
+  catalog_data:
+  inventory_data:
+  orders_data:
+  reports_data:
