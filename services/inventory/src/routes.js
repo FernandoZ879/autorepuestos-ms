@@ -40,6 +40,24 @@ router.post('/stores', async (req, res) => {
     res.status(201).json({ id: rows[0].id });
 });
 
+// Update store
+router.put('/stores/:id', async (req, res) => {
+    const { id } = req.params;
+    const { name, nit, address, phone } = req.body;
+    try {
+        const { rows } = await pool.query(
+            'UPDATE stores SET name = $1, nit = $2, address = $3, phone = $4 WHERE id = $5 RETURNING *',
+            [name, nit, address, phone, id]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Store not found' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Get stock
 router.get('/stock', async (req, res) => {
     const { productId, storeId } = req.query;

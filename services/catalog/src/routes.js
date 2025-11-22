@@ -165,4 +165,25 @@ router.delete('/categories/:id', async (req, res) => {
     }
 });
 
+router.put('/categories/:id', async (req, res) => {
+    const { id } = req.params;
+    const { name, description } = req.body;
+    try {
+        const result = await pool.query(
+            'UPDATE categories SET name = $1, description = $2 WHERE id = $3 RETURNING *',
+            [name, description, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Categoría no encontrada' });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        if (err.code === '23505') {
+            res.status(409).json({ error: 'La categoría ya existe' });
+        } else {
+            res.status(500).json({ error: err.message });
+        }
+    }
+});
+
 module.exports = router;
