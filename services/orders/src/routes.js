@@ -1,5 +1,7 @@
+
 const { Router } = require('express');
 const { pool } = require('./db');
+const fetch = require('node-fetch');
 
 const router = Router();
 
@@ -16,40 +18,93 @@ router.get('/cart', async (req, res) => {
     res.json([]);
 });
 
-// Checkout
-router.post('/checkout', async (req, res) => {
+// Create Order (Checkout)
+router.post('/', async (req, res) => {
     const { userId, storeId, items } = req.body;
+
+    if (!userId || !items || items.length === 0) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    console.log('Received order request', { userId, storeId, itemsLength: items.length });
     const client = await pool.connect();
+    console.log('Connected to DB');
     try {
         await client.query('BEGIN');
+        console.log('Transaction started');
         let total = 0;
+
+        // Verify stock and calculate total
         for (const item of items) {
-            const productResult = await client.query('SELECT price FROM products WHERE id = $1', [item.productId]);
-            if (productResult.rows.length > 0) {
-                total += productResult.rows[0].price * item.quantity;
+            // Fetch product details from catalog service
+            // Note: Using 'catalog' hostname since this runs inside docker network
+            // But wait, if the user runs this locally, 'catalog' won't resolve.
+            // The previous error "port already allocated" suggests the user might be running things locally too.
+            // However, the architecture is Docker. The gateway is at 'gateway:3000' or 'localhost:3000' from outside.
+            // Inside the network, 'catalog:3002' is the direct service.
+            // The gateway is also reachable at 'gateway:3000'.
+            // Let's try using the direct service URL 'http://catalog:3002/products/...' to avoid gateway overhead/issues inside the network.
+            // OR keep using localhost if we assume host networking or mapped ports? 
+            // Docker compose uses service names. 'http://catalog:3002' is safest for inter-service communication.
+
+            const productRes = await fetch(`http://catalog:3002/products/${item.productId}`);
+            if (!productRes.ok) {
+                throw new Error(`Failed to fetch product ${item.productId}`);
             }
+            const product = await productRes.json();
+            const availableStock = product.stock || 0;
+            if (availableStock < item.quantity) {
+                throw new Error(`Insufficient stock for product ${product.name || item.productId}`);
+            }
+            // Use price from product if not provided, or trust client? 
+            // Better to trust product price from DB.
+            const price = product.price ?? item.price ?? 0;
+            total += price * item.quantity;
+
+            // Store product data for later stock update
+            item._product = product;
+            item._finalPrice = price;
         }
 
+        console.log('Calculated total:', total);
         const { rows } = await client.query(
             'INSERT INTO orders (user_id, store_id, status, total) VALUES ($1, $2, $3, $4) RETURNING id',
-            [userId, storeId, 'PENDING', total]
+            [userId, storeId || null, 'PENDING', total]
         );
         const orderId = rows[0].id;
+        console.log('Order created:', orderId);
 
+        // Insert order items and decrement stock
         for (const item of items) {
-            const productResult = await client.query('SELECT price FROM products WHERE id = $1', [item.productId]);
-            if (productResult.rows.length > 0) {
-                await client.query(
-                    'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)',
-                    [orderId, item.productId, item.quantity, productResult.rows[0].price]
-                );
+            await client.query(
+                'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)',
+                [orderId, item.productId || item.id, item.quantity, item._finalPrice]
+            );
+
+            // Decrement stock via catalog PATCH endpoint
+            // We can use the PATCH /products/:id/stock endpoint we created earlier
+            const newStock = (item._product.stock || 0) - item.quantity;
+
+            const updateRes = await fetch(`http://catalog:3002/products/${item.productId}/stock`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ stock: newStock })
+            });
+
+            if (!updateRes.ok) {
+                console.error(`Failed to update stock for product ${item.productId}`);
+                // We should probably throw here to rollback the transaction
+                throw new Error(`Failed to update stock for product ${item.productId}`);
             }
         }
+        console.log('Items inserted and stock updated');
 
         await client.query('COMMIT');
-        res.status(201).json({ id: orderId });
+        console.log('Transaction committed');
+        res.status(201).json({ id: orderId, status: 'PENDING', total });
     } catch (e) {
         await client.query('ROLLBACK');
+        console.error('Order creation error:', e);
         res.status(400).json({ ok: false, error: String(e) });
     } finally {
         client.release();
@@ -57,13 +112,13 @@ router.post('/checkout', async (req, res) => {
 });
 
 // Get all orders
-router.get('/orders', async (_req, res) => {
+router.get('/', async (_req, res) => {
     const { rows } = await pool.query('SELECT * FROM orders');
     res.json(rows);
 });
 
 // Get order by id
-router.get('/orders/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const { id } = req.params;
     const { rows } = await pool.query('SELECT * FROM orders WHERE id = $1', [id]);
     if (rows.length === 0) {

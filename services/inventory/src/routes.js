@@ -9,6 +9,27 @@ router.get('/stores', async (_req, res) => {
     res.json(rows);
 });
 
+// Get all suppliers
+router.get('/suppliers', async (_req, res) => {
+    const { rows } = await pool.query('SELECT * FROM suppliers');
+    res.json(rows);
+});
+
+// Create supplier
+router.post('/suppliers', async (req, res) => {
+    const { name, contactName, email, phone, address } = req.body;
+    try {
+        const { rows } = await pool.query(
+            'INSERT INTO suppliers (name, contact_name, email, phone, address) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+            [name, contactName, email, phone, address]
+        );
+        res.status(201).json({ id: rows[0].id });
+    } catch (error) {
+        console.error('Create supplier error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Create store
 router.post('/stores', async (req, res) => {
     const { name, nit, address, phone } = req.body;

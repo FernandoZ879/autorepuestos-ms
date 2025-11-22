@@ -5,7 +5,7 @@ const pool = new Pool({
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
+    port: 5432,
 });
 
 const createTable = async () => {
@@ -39,6 +39,18 @@ const createTable = async () => {
                 from_store_id UUID REFERENCES stores(id),
                 to_store_id UUID REFERENCES stores(id),
                 quantity INTEGER NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS suppliers (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                name TEXT NOT NULL,
+                contact_name TEXT,
+                email TEXT,
+                phone TEXT,
+                address TEXT,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
         `);

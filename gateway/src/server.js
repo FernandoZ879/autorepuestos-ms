@@ -1,93 +1,59 @@
-const express = require('express');
-const cors = require('cors');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const rateLimit = require('express-rate-limit');
+const http = require('http');
+const httpProxy = require('http-proxy');
 
-const app = express();
+const proxy = httpProxy.createProxyServer({});
 
-// Enable CORS
-app.use(cors());
-
-// Rate limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
-
-// Proxy middleware options
-const options = {
-    target: 'http://localhost:3000', // target host
-    changeOrigin: true, // needed for virtual hosted sites
-    ws: true, // proxy websockets
-};
-
-// Create proxy middleware
-const authProxy = createProxyMiddleware({
-    target: process.env.AUTH_URL || 'http://auth:3000',
-    changeOrigin: true,
-    pathRewrite: {
-        '^/api/auth': '',
-    },
-    onProxyReq: (proxyReq, req, res) => {
-        console.log(`[Auth] Proxied ${req.method} ${req.path} -> ${proxyReq.path}`);
+// Error handling
+proxy.on('error', (err, req, res) => {
+    console.error('Proxy error:', err);
+    if (!res.headersSent) {
+        res.writeHead(502, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Bad Gateway', details: err.message }));
     }
 });
 
-const catalogProxy = createProxyMiddleware({
-    target: process.env.CATALOG_URL || 'http://catalog:3001',
-    changeOrigin: true,
-    pathRewrite: {
-        '^/api/catalog': '',
-    },
-    onProxyReq: (proxyReq, req, res) => {
-        console.log(`[Catalog] Proxied ${req.method} ${req.path} -> ${proxyReq.path}`);
+const server = http.createServer((req, res) => {
+    // CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+        res.writeHead(200);
+        res.end();
+        return;
+    }
+
+    if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }));
+        return;
+    }
+
+    // Routing
+    if (req.url.startsWith('/catalog')) {
+        req.url = req.url.replace(/^\/catalog/, '');
+        proxy.web(req, res, { target: 'http://catalog:3002' });
+    } else if (req.url.startsWith('/auth')) {
+        req.url = req.url.replace(/^\/auth/, '');
+        proxy.web(req, res, { target: 'http://auth:3001' });
+    } else if (req.url.startsWith('/inventory')) {
+        req.url = req.url.replace(/^\/inventory/, '');
+        proxy.web(req, res, { target: 'http://inventory:3004' });
+    } else if (req.url.startsWith('/orders')) {
+        req.url = req.url.replace(/^\/orders/, '');
+        proxy.web(req, res, { target: 'http://orders:3003' });
+    } else if (req.url.startsWith('/reports')) {
+        req.url = req.url.replace(/^\/reports/, '');
+        proxy.web(req, res, { target: 'http://reports:3005' });
+    } else {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Not Found' }));
     }
 });
 
-const inventoryProxy = createProxyMiddleware({
-    target: process.env.INVENTORY_URL || 'http://inventory:3002',
-    changeOrigin: true,
-    pathRewrite: {
-        '^/api/inventory': '',
-    },
-    onProxyReq: (proxyReq, req, res) => {
-        console.log(`[Inventory] Proxied ${req.method} ${req.path} -> ${proxyReq.path}`);
-    }
+const PORT = process.env.PORT || 3010;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Gateway running on port ${PORT}`);
 });
 
-const ordersProxy = createProxyMiddleware({
-    target: process.env.ORDERS_URL || 'http://orders:3003',
-    changeOrigin: true,
-    pathRewrite: {
-        '^/api/orders': '',
-    },
-    onProxyReq: (proxyReq, req, res) => {
-        console.log(`[Orders] Proxied ${req.method} ${req.path} -> ${proxyReq.path}`);
-    }
-});
-
-const reportsProxy = createProxyMiddleware({
-    target: process.env.REPORTS_URL || 'http://reports:3004',
-    changeOrigin: true,
-    pathRewrite: {
-        '^/api/reports': '',
-    },
-    onProxyReq: (proxyReq, req, res) => {
-        console.log(`[Reports] Proxied ${req.method} ${req.path} -> ${proxyReq.path}`);
-    }
-});
-
-
-// Routes
-app.use('/api/auth', authProxy);
-app.use('/api/catalog', catalogProxy);
-app.use('/api/inventory', inventoryProxy);
-app.use('/api/orders', ordersProxy);
-app.use('/api/reports', reportsProxy);
-
-
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`Gateway is running on port ${PORT}`);
-});
